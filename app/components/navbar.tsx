@@ -1,6 +1,23 @@
-
-
+"use client"
+import {
+  useState
+} from "react"
 export default function NavBar() {
+  const [openMenu, setOpenMenu] = useState(false);
+  const [widthValue, setWidthValue] = useState(0);
+
+  function handleMenuBar(): void {
+    if (openMenu == false) {
+      setOpenMenu(true);
+      setWidthValue(250)
+    } else if (openMenu == true) {
+      setOpenMenu(false);
+      setWidthValue(0)
+    } else {
+      setOpenMenu(false);
+      setWidthValue(0)
+    }
+  }
   return (
     <header className="bg-gray-300/10 py-3">
       <nav className="flex items-center justify-between px-2 flex-row">
@@ -23,7 +40,7 @@ export default function NavBar() {
           </ul>
         </div>
         <div className="w-full flex gap-4   flex-row-reverse">
-          <button className="lg:hidden">
+          <button onClick={handleMenuBar} className="lg:hidden">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -66,6 +83,26 @@ export default function NavBar() {
           </button>
         </div>
       </nav>
+
+      <div className={`lg:hidden __menu __menu ${openMenu ? "__open_menu" : null}`}  >
+        <div className="relative ">
+          <button onClick={handleMenuBar} className="absolute top-[30px] right-[30px]">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8">
+              <path fillRule="evenodd" d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
+            </svg>
+
+          </button>
+        </div>
+        <ul className="flex gap-8 font-semibold text-xl flex-col px-2 h-screen items-center justify-center">
+          <li>Home</li>
+          <li>Deals</li>
+
+          <li>Accesories</li>
+          <li>Partner</li>
+          <li>About</li>
+          <li>Contact</li>
+        </ul>
+      </div>
     </header>
   );
 }

@@ -31,3 +31,18 @@ body {
     text-wrap: balance;
   }
 }
+.__menu{
+  width: 0px;
+  transition: width 0.2s ease-in ;
+  position: fixed;
+  overflow-x: hidden;
+  left: 0px;
+  top: 0px;
+  background: rgba(2,4,2,0.45);
+  backdrop-filter: blur(10px);
+  height: 100%;
+  z-index: 2;
+}
+.__open_menu {
+  width: 100%;
+}
