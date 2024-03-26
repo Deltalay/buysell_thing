@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar } from "drizzle-orm/pg-core";
+import { pgTable, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 import { customType } from "drizzle-orm/pg-core";
 
 const bytea = customType<{data: string}>({
@@ -13,4 +13,5 @@ export const users = pgTable("users", {
   email: varchar("email").notNull().unique(),
   password: varchar("password").notNull(),
   avatar: bytea('avatar').notNull(),
+  createdAt: timestamp('createdAt').defaultNow()
 });
