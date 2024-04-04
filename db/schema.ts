@@ -7,7 +7,7 @@ const bytea = customType<{data: string}>({
   }
 })
 
-export const users = pgTable("users", {
+export const users = pgTable("users_next", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: varchar("name", { length: 64 }).notNull(),
   email: varchar("email").notNull().unique(),
