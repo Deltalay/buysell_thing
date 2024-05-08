@@ -38,6 +38,18 @@ export default function CreateForm() {
           </p>
         )}
       </div>
+      <div className="mt-2">
+        <label className="font-semibold" htmlFor="username">
+          Username:
+        </label>
+        <input
+          className="block border outline-none rounded-md p-2  w-full`"
+          placeholder="Your Email"
+          name="username"
+          id="username"
+          type="text"
+        />
+      </div>
       <div className="mt-5">
         <label className="font-semibold" htmlFor="password">
           Password:

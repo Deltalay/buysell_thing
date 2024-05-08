@@ -1,6 +1,7 @@
 "use server";
 import { db } from "@/db/drizzle";
-
+import { createAvatar } from "@dicebear/core";
+import { initials } from "@dicebear/collection";
 import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
@@ -16,6 +17,7 @@ export async function CreateAccount(
 ) {
   const email: string = formData.get("email")?.toString() || "";
   const password: string = formData.get("password")?.toString() || "";
+  const username: string = formData.get("username")?.toString() || "";
   const confirm_password: string =
     formData.get("passwordCon")?.toString() || "";
   const schema = z
@@ -24,6 +26,7 @@ export async function CreateAccount(
         .string()
         .email("Please make sure that it is email!")
         .min(1, "Email field is empty"),
+      username: z.string().min(3, "Username must be 3 characters or longer"),
       password: z.string().min(8, "Password must be 8 characters or larger"),
       confirm_password: z
         .string()
@@ -41,6 +44,7 @@ export async function CreateAccount(
     email,
     password,
     confirm_password,
+    username,
   });
   if (check.success == false) {
     const error = check.error.format();
@@ -53,6 +57,52 @@ export async function CreateAccount(
     };
   }
   const data = check.data;
+  const checkIfUserExist = await db
+    .select()
+    .from(users)
+    .where(eq(users.email, data.email));
+  if (checkIfUserExist.length <= 0) {
+    try {
+      const hashPassword = await argon.hash(data.password);
+      const avatarUri = await createAvatar(initials, {
+        backgroundType: ["gradientLinear"],
+        seed: data.username,
+      }).toDataUri();
+      const insertUser = await db
+        .insert(users)
+        .values({
+          avatar: avatarUri,
+          name: data.username,
+          email: data.email,
+          password: hashPassword,
+        })
+        .onConflictDoNothing()
+        .returning({ insertId: users.id });
+
+      return {
+        pass_message: "",
+        con_pass_message: "",
+        match_message: "",
+        email_message: "",
+      };
+    } catch (e) {
+      if (e) {
+        return {
+          email_message: "Something went wrong!",
+          pass_message: "",
+          con_pass_message: "",
+          match_message: "",
+        };
+      }
+    }
+  } else {
+    return {
+      email_message: "User already exist!",
+      pass_message: "",
+      con_pass_message: "",
+      match_message: "",
+    };
+  }
   return {
     email_message: "",
     pass_message: "",
