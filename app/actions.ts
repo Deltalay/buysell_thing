@@ -76,7 +76,7 @@ export async function CreateAccount(
           email: data.email,
           password: hashPassword,
         })
-        .onConflictDoNothing()
+        .onConflictDoNothing({ target: users.email })
         .returning({ insertId: users.id });
 
       return {
