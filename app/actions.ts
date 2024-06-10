@@ -1,7 +1,5 @@
 "use server";
 import { db } from "@/db/drizzle";
-import { createAvatar } from "@dicebear/core";
-import { initials } from "@dicebear/collection";
 import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
@@ -12,6 +10,7 @@ export async function CreateAccount(
     pass_message: string;
     con_pass_message: string;
     match_message: string;
+    username_message: string;
   },
   formData: FormData
 ) {
@@ -54,6 +53,7 @@ export async function CreateAccount(
       pass_message: error.password?._errors[0] as string,
       con_pass_message: error.confirm_password?._errors[0] as string,
       match_message: error._errors[0] as string,
+      username_message: error.username?._errors[0] as string,
     };
   }
   const data = check.data;
@@ -64,14 +64,16 @@ export async function CreateAccount(
   if (checkIfUserExist.length <= 0) {
     try {
       const hashPassword = await argon.hash(data.password);
-      const avatarUri = await createAvatar(initials, {
-        backgroundType: ["gradientLinear"],
-        seed: data.username,
-      }).toDataUri();
+      const fetchingData = await fetch(
+        `https://source.boringavatars.com/marble/160/${data.username}`
+      );
+      const response = await fetchingData.text();
+      const insertString = "data:image/svg+xml;base64, "  + btoa(response);
+      console.log(insertString)
       const insertUser = await db
         .insert(users)
         .values({
-          avatar: avatarUri,
+          avatar: insertString,
           name: data.username,
           email: data.email,
           password: hashPassword,
@@ -84,6 +86,7 @@ export async function CreateAccount(
         con_pass_message: "",
         match_message: "",
         email_message: "",
+        username_message: "",
       };
     } catch (e) {
       if (e) {
@@ -92,6 +95,7 @@ export async function CreateAccount(
           pass_message: "",
           con_pass_message: "",
           match_message: "",
+          username_message: "",
         };
       }
     }
@@ -101,6 +105,7 @@ export async function CreateAccount(
       pass_message: "",
       con_pass_message: "",
       match_message: "",
+      username_message: "",
     };
   }
   return {
@@ -108,6 +113,7 @@ export async function CreateAccount(
     pass_message: "",
     con_pass_message: "",
     match_message: "",
+    username_message: "",
   };
 }
 export async function LoginAccount(formData: FormData) {

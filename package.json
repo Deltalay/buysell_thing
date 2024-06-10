@@ -6,30 +6,30 @@
     "dev": "next dev --turbo",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "generateMigration": "npx drizzle-kit generate",
+    "migrate": "npx drizzle-kit migrate"
   },
   "dependencies": {
-    "@dicebear/collection": "^8.0.1",
-    "@dicebear/core": "^8.0.1",
-    "argon2": "^0.40.1",
-    "drizzle-orm": "^0.30.10",
+    "argon2": "^0.40.3",
+    "drizzle-orm": "^0.31.2",
     "next": "^14.2.3",
-    "pg": "^8.11.5",
+    "pg": "^8.12.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@types/node": "^20.12.12",
+    "@types/node": "^20.14.2",
     "@types/pg": "^8.11.6",
-    "@types/react": "^18.3.2",
+    "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "autoprefixer": "^10.4.19",
-    "drizzle-kit": "^0.20.18",
+    "drizzle-kit": "^0.22.7",
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.3",
     "postcss": "^8.4.38",
-    "tailwindcss": "^3.4.3",
+    "tailwindcss": "^3.4.4",
     "typescript": "^5.4.5"
   }
 }

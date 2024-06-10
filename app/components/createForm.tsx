@@ -7,6 +7,7 @@ export default function CreateForm() {
     pass_message: "",
     con_pass_message: "",
     match_message: "",
+    username_message: "",
   };
   const [formState, formAction] = useFormState(CreateAccount, initialState);
   return (
@@ -43,7 +44,11 @@ export default function CreateForm() {
           Username:
         </label>
         <input
-          className="block border outline-none rounded-md p-2  w-full`"
+          className={`block border outline-none rounded-md p-2 ${
+            formState.username_message == ""
+              ? "border-black"
+              : "border-red-500 "
+          } w-full`}
           placeholder="Your Email"
           name="username"
           id="username"
