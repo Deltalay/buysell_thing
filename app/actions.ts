@@ -5,6 +5,9 @@ import { eq } from "drizzle-orm";
 import { z } from "zod";
 import * as argon from "argon2";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
+import * as jose from "jose";
+
 export async function CreateAccount(
   currentState: {
     email_message: string;
@@ -120,7 +123,18 @@ export async function LoginAccount(formData: FormData) {
       const passwordFromDatabase = search[0].password;
       const verify = await argon.verify(passwordFromDatabase, password);
       if (verify) {
-        // Everything is correct
+        const secret = jose.base64url.decode(process.env.SECRET_KEY as string);
+        const jwt = await new jose.EncryptJWT({ "urn:example:claim": true })
+          .setProtectedHeader({ alg: "dir", enc: "A128CBC-HS256" })
+          .setIssuedAt()
+          .setExpirationTime("2h")
+          .encrypt(secret);
+        cookies().set("jwt_token", jwt, {
+          expires: 2 * 60 * 60 * 1000,
+          httpOnly: true,
+          secure: true,
+          sameSite: "strict",
+        });
       } else {
         // Wrong password
         return;
@@ -133,4 +147,5 @@ export async function LoginAccount(formData: FormData) {
       console.log(e);
     }
   }
+  redirect("/");
 }
