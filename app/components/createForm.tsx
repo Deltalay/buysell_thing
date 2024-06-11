@@ -49,7 +49,7 @@ export default function CreateForm() {
               ? "border-black"
               : "border-red-500 "
           } w-full`}
-          placeholder="Your Email"
+          placeholder="Your name"
           name="username"
           id="username"
           type="text"

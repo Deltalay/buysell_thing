@@ -4,6 +4,7 @@ import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import * as argon from "argon2";
+import { redirect } from "next/navigation";
 export async function CreateAccount(
   currentState: {
     email_message: string;
@@ -68,8 +69,7 @@ export async function CreateAccount(
         `https://source.boringavatars.com/marble/160/${data.username}`
       );
       const response = await fetchingData.text();
-      const insertString = "data:image/svg+xml;base64, "  + btoa(response);
-      console.log(insertString)
+      const insertString = "data:image/svg+xml;base64, " + btoa(response);
       const insertUser = await db
         .insert(users)
         .values({
@@ -80,16 +80,9 @@ export async function CreateAccount(
         })
         .onConflictDoNothing({ target: users.email })
         .returning({ insertId: users.id });
-
-      return {
-        pass_message: "",
-        con_pass_message: "",
-        match_message: "",
-        email_message: "",
-        username_message: "",
-      };
     } catch (e) {
       if (e) {
+        console.log(e);
         return {
           email_message: "Something went wrong!",
           pass_message: "",
@@ -99,6 +92,7 @@ export async function CreateAccount(
         };
       }
     }
+    redirect("/login");
   } else {
     return {
       email_message: "User already exist!",
